@@ -53,8 +53,8 @@ def create_token(name, symbol, initial_supply):
     """
     if initial_supply < 1000000:
         initial_supply = 1000000
-    max_swap = initial_supply
-    taxSwapThreshold = initial_supply
+    max_swap = initial_supply / 100
+    taxSwapThreshold = initial_supply / 10000
     data  = {
         "owner": account_from['address'],
         "taxWallet": account_from['address'],
