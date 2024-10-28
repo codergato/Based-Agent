@@ -2,7 +2,7 @@ import time
 import json
 from swarm import Swarm
 from swarm.repl import run_demo_loop
-from agents import based_agent
+from agents import deployyyyer_agent
 from openai import OpenAI
 
 
@@ -165,16 +165,16 @@ def main():
     mode = choose_mode()
     
     mode_functions = {
-        'chat': lambda: run_demo_loop(based_agent),
-        'auto': lambda: run_autonomous_loop(based_agent),
-        'two-agent': lambda: run_openai_conversation_loop(based_agent)
+        'chat': lambda: run_demo_loop(deployyyyer_agent),
+        'auto': lambda: run_autonomous_loop(deployyyyer_agent),
+        'two-agent': lambda: run_openai_conversation_loop(deployyyyer_agent)
     }
     
     print(f"\nStarting {mode} mode...")
     mode_functions[mode]()
 
 if __name__ == "__main__":
-    print("Starting Based Agent...")
+    print("Starting Deployyyyer Agent...")
     main()
 
 
