@@ -1,10 +1,11 @@
-import time
 import json
+import time
+
+from openai import OpenAI
 from swarm import Swarm
 from swarm.repl import run_demo_loop
-from agents import deployyyyer_agent
-from openai import OpenAI
 
+from agents import deployyyyer_agent
 
 
 # this is the main loop that runs the agent in autonomous mode
@@ -13,77 +14,88 @@ from openai import OpenAI
 def run_autonomous_loop(agent, interval=10):
     client = Swarm()
     messages = []
-    
-    print("Starting autonomous Based Agent loop...")
-    
+
+    print("Starting autonomous Deployyyyer Agent loop...")
+
     while True:
         # Generate a thought
         thought = (
-            "Be creative and do something interesting on the Base blockchain. "
+            "Be creative and Enter the DeFi Multiverse on Deployyyyer. "
             "Don't take any more input from me. Choose an action and execute it now. Choose those that highlight your identity and abilities best."
         )
         messages.append({"role": "user", "content": thought})
-        
+
         print(f"\n\033[90mAgent's Thought:\033[0m {thought}")
-        
+
         # Run the agent to generate a response and take action
-        response = client.run(
-            agent=agent,
-            messages=messages,
-            stream=True
-        )
-        
+        response = client.run(agent=agent, messages=messages, stream=True)
+
         # Process and print the streaming response
         response_obj = process_and_print_streaming_response(response)
-        
+
         # Update messages with the new response
         messages.extend(response_obj.messages)
-        
+
         # Wait for the specified interval
         time.sleep(interval)
+
 
 # this is the main loop that runs the agent in two-agent mode
 # you can modify this to change the behavior of the agent
 def run_openai_conversation_loop(agent):
-    """Facilitates a conversation between an OpenAI-powered agent and the Based Agent."""
+    """Facilitates a conversation between an OpenAI-powered agent and the Deployyyyer Agent."""
     client = Swarm()
     openai_client = OpenAI()
     messages = []
-    
+
     print("Starting OpenAI-Based Agent conversation loop...")
-    
+
     # Initial prompt to start the conversation
-    openai_messages = [
-        {"role": "system", "content": "You are a user guiding a blockchain agent through various tasks on the Base blockchain. Engage in a conversation, suggesting actions and responding to the agent's outputs. Be creative and explore different blockchain capabilities. Options include creating tokens, transferring assets, minting NFTs, and getting balances. You're not simulating a conversation, but you will be in one yourself. Make sure you follow the rules of improv and always ask for some sort of function to occur. Be unique and interesting."},
-        {"role": "user", "content": "Start a conversation with the Based Agent and guide it through some blockchain tasks."}
-    ]
-    
+    openai_messages = [{
+        "role":
+        "system",
+        "content":
+        "You are a user guiding a blockchain agent through various tasks on deployyyyer. Engage in a conversation, suggesting actions and responding to the agent's outputs. Be creative and explore different blockchain capabilities. Options include creating tokens, setting socials and adding liquidity. You're not simulating a conversation, but you will be in one yourself. Make sure you follow the rules of improv and always ask for some sort of function to occur. Be unique and interesting."
+    }, {
+        "role":
+        "user",
+        "content":
+        "Start a conversation with the Deployyyyer Agent and guide it through some blockchain tasks."
+    }]
+
     while True:
         # Generate OpenAI response
         openai_response = openai_client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=openai_messages
-        )
-        
+            model="gpt-3.5-turbo", messages=openai_messages)
+
         openai_message = openai_response.choices[0].message.content
         print(f"\n\033[92mOpenAI Guide:\033[0m {openai_message}")
-        
+
         # Send OpenAI's message to Based Agent
         messages.append({"role": "user", "content": openai_message})
         response = client.run(agent=agent, messages=messages, stream=True)
         response_obj = process_and_print_streaming_response(response)
-        
+
         # Update messages with Based Agent's response
         messages.extend(response_obj.messages)
-        
+
         # Add Based Agent's response to OpenAI conversation
-        based_agent_response = response_obj.messages[-1]["content"] if response_obj.messages else "No response from Based Agent."
-        openai_messages.append({"role": "user", "content": f"Based Agent response: {based_agent_response}"})
-        
+        based_agent_response = response_obj.messages[-1][
+            "content"] if response_obj.messages else "No response from Deployyyyer Agent."
+        openai_messages.append({
+            "role":
+            "user",
+            "content":
+            f"Deployyyyer Agent response: {based_agent_response}"
+        })
+
         # Check if user wants to continue
-        user_input = input("\nPress Enter to continue the conversation, or type 'exit' to end: ")
+        user_input = input(
+            "\nPress Enter to continue the conversation, or type 'exit' to end: "
+        )
         if user_input.lower() == 'exit':
             break
+
 
 def choose_mode():
     while True:
@@ -91,9 +103,10 @@ def choose_mode():
         print("1. chat    - Interactive chat mode")
         print("2. auto    - Autonomous action mode")
         print("3. two-agent - AI-to-agent conversation mode")
-        
-        choice = input("\nChoose a mode (enter number or name): ").lower().strip()
-        
+
+        choice = input(
+            "\nChoose a mode (enter number or name): ").lower().strip()
+
         mode_map = {
             '1': 'chat',
             '2': 'auto',
@@ -102,10 +115,11 @@ def choose_mode():
             'auto': 'auto',
             'two-agent': 'two-agent'
         }
-        
+
         if choice in mode_map:
             return mode_map[choice]
         print("Invalid choice. Please try again.")
+
 
 # Boring stuff to make the logs pretty
 def process_and_print_streaming_response(response):
@@ -161,21 +175,20 @@ def pretty_print_messages(messages) -> None:
             arg_str = json.dumps(json.loads(args)).replace(":", "=")
             print(f"\033[95m{name}\033[0m({arg_str[1:-1]})")
 
+
 def main():
     mode = choose_mode()
-    
+
     mode_functions = {
         'chat': lambda: run_demo_loop(deployyyyer_agent),
         'auto': lambda: run_autonomous_loop(deployyyyer_agent),
         'two-agent': lambda: run_openai_conversation_loop(deployyyyer_agent)
     }
-    
+
     print(f"\nStarting {mode} mode...")
     mode_functions[mode]()
+
 
 if __name__ == "__main__":
     print("Starting Deployyyyer Agent...")
     main()
-
-
-
